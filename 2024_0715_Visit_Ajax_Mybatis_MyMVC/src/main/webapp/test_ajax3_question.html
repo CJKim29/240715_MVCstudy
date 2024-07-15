@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>clac_ajax</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+	
+	//jQuery초기화
+	$(document).ready(function(){
+		const reg_num = /^[0-9]{1,4}$/;
+		//결과보기 버튼 클릭되면
+		$("#btn-result").click(function(){
+			
+			let su1 = $("#su1").val();
+			let su2 = $("#su2").val();
+			
+			//정규식 체크(1~4자리 숫자만)
+			if(reg_num.test(su1)==false){
+				alert('1~4자리 숫자만 입력하세요');
+				$("#su1").val("");
+				$("#su1").focus();
+				return;
+			}
+			
+			if(su2==0 || reg_num.test(su2)==false){
+				alert('0이 아닌 1~4자리 숫자만 입력하세요');
+				$("#su2").val("");
+				$("#su2").focus();
+				return;
+			}
+			
+			//jQuery Ajax요청
+			$.ajax({
+				
+				url		:	"calc.do",				//CalcAction
+				data	:	{"su1":su1, "su2":su2},	//parameter : calc.do?su1=5&su2=8
+						
+				dataType:	"json",
+				success	:	function(res_data){
+					//res_data={"plus":13, "minus":-3, "multiply":40, "divide":0}
+					
+					$("#plus").html(res_data.plus);
+					$("#minus").html(res_data.minus);
+					$("#multiply").html(res_data.multiply);
+					$("#divide").html(res_data.divide);
+
+				},
+				error	:	function(err){
+					alert(err.responseText);
+				}
+			});
+		});
+	});
+	
+	
+</script>
+
+</head>
+<body>
+수1:<input id="su1"><br>
+수2:<input id="su2">
+	<input id="btn-result" type="button" value="결과보기" >
+<hr>
+<table width="500" border="1">
+	<tr>
+		<th width=30%>더하기</th>
+		<td><span id="plus"></span></td>
+	</tr>
+	
+	<tr>
+		<th>빼기</th>
+		<td><span id="minus"></span></td>
+	</tr>
+	
+	<tr>
+		<th>곱하기</th>
+		<td><span id="multiply"></span></td>
+	</tr>
+	
+	<tr>
+		<th>나누기</th>
+		<td><span id="divide"></span></td>
+	</tr>
+</table>
+</body>
+</html>
